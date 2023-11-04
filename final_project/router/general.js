@@ -5,10 +5,22 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
-public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+public_users.post("/register", (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+  
+    if (username && password) {
+      if (!isValid(username)) {
+        users.push({ username, password }); // Use the correct property name "username" instead of "usrname".
+        return res.status(200).json({ message: "You have successfully registered. Now you can log in." });
+      } else {
+        return res.status(409).json({ message: "User already exists!" }); // Changed status code to 409 (Conflict) as the user already exists.
+      }
+    }
+    
+    return res.status(400).json({ message: "Unable to register user. Make sure you provide both username and password." });
+  });
+  
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
