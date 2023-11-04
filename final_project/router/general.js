@@ -28,17 +28,50 @@ public_users.get('/',function (req, res) {
   return res.status(200).send(JSON.stringify({bookList}, null, 4));
 });
 
+// TASK 10 - Get the book list available in the shop using promises
+public_users.get('/async-get-books',function (req, res) {
+
+    const bookList = new Promise((resolve, reject) => {
+        resolve(res.send(JSON.stringify({books}, null, 4)));
+      });
+
+      bookList.then(() => console.log("Promise for Task 10 resolved"));
+
+  });
+
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   const isbn = req.params.isbn;
   if(books[isbn]) {
     return res.status(200).json(books[isbn]);
   } else {
-    return res.status(404).json({message: "Book not found."});
+    return res.status(404).json({message: "ISBN not found."});
   }
   
 });
-  
+
+// TASK 11 - Get book details based on ISBN using Promises
+public_users.get('/isbn/:isbn/async-get-books',function (req, res) {
+    const get_books_isbn = new Promise((resolve, reject) => {
+    const isbn = req.params.isbn;
+    // console.log(isbn);
+        if (req.params.isbn <= 10) {
+        resolve(res.send(books[isbn]));
+    }
+        else {
+            reject(res.send('ISBN not found'));
+        }
+    });
+    get_books_isbn.
+        then(function(){
+            console.log("Promise for Task 11 is resolved");
+   }).
+        catch(function () { 
+                console.log('ISBN not found');
+  });
+
+});
+
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   let booksbyauthor = [];
@@ -53,6 +86,29 @@ public_users.get('/author/:author',function (req, res) {
 
   return res.status(200).send(JSON.stringify({booksbyauthor}, null, 4))
 });
+
+// TASK 12 - Get book details based on author using Promises
+public_users.get('/author/:author/async-get-books',function (req, res) {
+    const get_books_isbn = new Promise((resolve, reject) => {
+    let booksbyauthor = [];
+    let isbns = Object.keys(books);
+        isbns.forEach((isbn) => {
+    if(books[isbn]["author"] === req.params.author) {
+        booksbyauthor.push({"isbn":isbn,
+            "title":books[isbn]["title"],
+            "reviews":books[isbn]["reviews"]});
+
+          resolve(res.send(JSON.stringify({booksbyauthor}, null, 4)));
+          }
+        });
+        reject(res.send("The mentioned ISBN does not exist "))
+        });
+        get_books_isbn.then(function(){
+                console.log("Promise for Task 12 is resolved");
+       }).catch(function () { 
+                    console.log('The mentioned ISBN does not exist');
+      });
+      });
 
 
 // Get all books based on title
@@ -70,6 +126,30 @@ public_users.get('/title/:title', function (req, res) {
     });
     return res.status(200).send(JSON.stringify({ booksbytitle }, null, 4));
 });
+
+// TASK 13 - Get book details based on title using Promises
+public_users.get('/title/:title/async-get-books',function (req, res) {
+    const get_books_isbn = new Promise((resolve, reject) => {
+    let booksbytitle = [];
+    let isbns = Object.keys(books);
+        isbns.forEach((isbn) => {
+    if(books[isbn]["title"] === req.params.title) {
+        booksbytitle.push({"isbn":isbn,
+            "title":books[isbn]["title"],
+            "reviews":books[isbn]["reviews"]});
+
+          resolve(res.send(JSON.stringify({booksbytitle}, null, 4)));
+          }
+        });
+        reject(res.send("The mentioned title does not exist "))
+        });
+        get_books_isbn.then(function(){
+                console.log("Promise for Task 13 is resolved");
+       }).catch(function () { 
+                    console.log('The mentioned title does not exist');
+      });
+      });
+
 
 
 //  Get book review
