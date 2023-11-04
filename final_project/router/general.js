@@ -11,14 +11,14 @@ public_users.post("/register", (req, res) => {
   
     if (username && password) {
       if (!isValid(username)) {
-        users.push({ username, password }); // Use the correct property name "username" instead of "usrname".
+        users.push({"username":username, "password": password}); 
         return res.status(200).json({ message: "You have successfully registered. Now you can log in." });
       } else {
-        return res.status(409).json({ message: "User already exists!" }); // Changed status code to 409 (Conflict) as the user already exists.
+        return res.status(404).json({ message: "User already exists!" }); 
       }
     }
     
-    return res.status(400).json({ message: "Unable to register user. Make sure you provide both username and password." });
+    return res.status(404).json({ message: "Unable to register user. Make sure you provide both username and password." });
   });
   
 
@@ -74,8 +74,9 @@ public_users.get('/title/:title', function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const isbn = req.params.isbn;
+  const reviews = books[isbn]["reviews"]
+  return res.status(200).json(reviews);
 });
 
 module.exports.general = public_users;

@@ -7,7 +7,7 @@ let users = [];
 
 const isValid = (username) => { 
     let userWithSameName = users.filter((user) => {
-      return user.username === username;
+      return user.username === username
     });
   
     if (userWithSameName.length > 0) {
